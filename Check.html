@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Visibility Test</title>
+
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style type="text/css">
+            body {
+                background-color: #f0f0f2;
+                margin: 0;
+                padding: 0;
+                font-family: -apple-system, system-ui, BlinkMacSystemFont,
+                    "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial,
+                    sans-serif;
+            }
+            div {
+                width: 600px;
+                margin: 5em auto;
+                padding: 2em;
+                background-color: #fdfdff;
+                border-radius: 0.5em;
+                box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
+            }
+            a:link,
+            a:visited {
+                color: #38488f;
+                text-decoration: none;
+            }
+            @media (max-width: 700px) {
+                div {
+                    margin: 0 auto;
+                    width: auto;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(window).focus(function () {
+                //do something
+				console.log("You are in this tab");
+				$("#visibility-log").append(`<li><b>Blur API: Visible</b> ${new Date()}</li>`);
+            });
+
+            $(window).blur(function () {
+                //do something
+				console.log("You left this tab");
+				$("#visibility-log").append(`<li><b>Blur API: Not Visible</b> ${new Date()}</li>`);
+            });
+
+            var vis = (function () {
+                var stateKey,
+                    eventKey,
+                    keys = {
+                        hidden: "visibilitychange",
+                        webkitHidden: "webkitvisibilitychange",
+                        mozHidden: "mozvisibilitychange",
+                        msHidden: "msvisibilitychange",
+                    };
+                for (stateKey in keys) {
+                    if (stateKey in document) {
+                        eventKey = keys[stateKey];
+                        break;
+                    }
+                }
+                return function (c) {
+                    if (c) {
+                        document.addEventListener(eventKey, c);
+                        //document.addEventListener("blur", c);
+                        //document.addEventListener("focus", c);
+                    }
+                    return !document[stateKey];
+                };
+            })();
+
+            vis(function () {
+				document.title = vis() ? "Visible" : "Not visible";
+				if (vis()) {
+					$("#visibility-log").append(`<li><b>PV API: Visible</b> ${new Date()}</li>`);
+				} else {
+					$("#visibility-log").append(`<li><b>PV API: Not Visible</b> ${new Date()}</li>`);
+				}
+                console.log(new Date(), "visible ?", vis());
+            });
+
+            // to set the initial state
+            document.title = vis() ? "Visible" : "Not visible";
+        </script>
+        <div>
+            <h1>Page Visibility Test</h1>
+            <p>
+                This checks both the page visibility API and the old blur/focus API.
+                <br/>
+                To prevent websites from knowing your visibility status, use
+                <a href="https://github.com/IceWreck/Page-Visibility-User-Script">IceWreck/Page-Visibility-User-Script</a>
+            </p>
+			<p><a href="https://abifog.com">Anchit</a></p>
+			<hr/>
+			<h3>Visibility Log:</h3>
+			<p>
+				<ul id="visibility-log">
+
+				</ul>
+			</p>
+        </div>
+    </body>
+</html>
