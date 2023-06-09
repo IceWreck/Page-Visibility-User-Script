@@ -22,7 +22,7 @@ let events_to_block = [
   "mouseleave"
 ]
 
-for (event_name of events_to_block) {
+for (let event_name of events_to_block) {
   document.addEventListener(event_name, function (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -30,7 +30,7 @@ for (event_name of events_to_block) {
   }, true);
 }
 
-for (event_name of events_to_block) {
+for (let event_name of events_to_block) {
   window.addEventListener(event_name, function (event) {
       event.preventDefault();
       event.stopPropagation();
